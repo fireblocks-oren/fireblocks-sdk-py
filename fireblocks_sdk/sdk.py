@@ -35,7 +35,7 @@ def handle_response(response, page_mode=False):
 
 class FireblocksSDK(object):
 
-    def __init__(self, private_key, api_key, api_base_url="https://api.fireblocks.io", timeout=None, anonymous_platform=False, seconds_jwt_exp=55):
+    def __init__(self, private_key, api_key, api_base_url="https://api.fireblocks.io", timeout=None, anonymous_platform=False, seconds_jwt_exp=55, http_session=None):
         """Creates a new Fireblocks API Client.
 
         Args:
@@ -43,13 +43,15 @@ class FireblocksSDK(object):
             api_key (str): Your api key. This is a uuid you received from Fireblocks
             api_base_url (str): The fireblocks server URL. Leave empty to use the default server
             timeout (number): Timeout for http requests in seconds
+            http_session (HttpSession): Locust HttpSession object generated in a locust test file
         """
         self.private_key = private_key
         self.api_key = api_key
         self.base_url = api_base_url
         self.token_provider = SdkTokenProvider(private_key, api_key, seconds_jwt_exp)
         self.timeout = timeout
-        self.http_session = requests.Session()
+        # self.http_session = requests.Session()
+        self.http_session = http_session
         self.http_session.headers.update({
             'X-API-Key': self.api_key,
             'User-Agent': self._get_user_agent(anonymous_platform)
